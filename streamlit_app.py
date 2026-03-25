@@ -182,5 +182,3 @@ with tab3:
     st.subheader("📋 데이터 상세 정보")
     st.dataframe(df.sort_index(ascending=False), use_container_width=True)
     st.download_button("Download CSV", df.to_csv(), "price_data.csv", "text/csv")
-
-
