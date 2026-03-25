@@ -6,3 +6,4 @@ matplotlib
 scikit-learn
 statsmodels
 torch
+koreanize-matplotlib
