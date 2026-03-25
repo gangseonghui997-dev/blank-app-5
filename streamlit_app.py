@@ -3,14 +3,13 @@ import pandas as pd
 import numpy as np
 import requests
 import matplotlib.pyplot as plt
+import koreanize_matplotlib
 import torch
 import torch.nn as nn
 from sklearn.linear_model import LinearRegression
 from sklearn.preprocessing import MinMaxScaler
 from sklearn.metrics import mean_squared_error, r2_score
 import platform
-
-import koreanize_matplotlib
 
 # ══════════════════════════════════════════════════════════════
 #  LSTM 모델 구조 정의
