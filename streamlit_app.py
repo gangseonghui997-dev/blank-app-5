@@ -10,16 +10,7 @@ from sklearn.preprocessing import MinMaxScaler
 from sklearn.metrics import mean_squared_error, r2_score
 import platform
 
-# ══════════════════════════════════════════════════════════════
-#  한글 폰트 설정
-# ══════════════════════════════════════════════════════════════
-if platform.system() == "Darwin":
-    plt.rcParams["font.family"] = "AppleGothic"
-elif platform.system() == "Windows":
-    plt.rcParams["font.family"] = "Malgun Gothic"
-else:
-    plt.rcParams["font.family"] = "DejaVu Sans"
-plt.rcParams["axes.unicode_minus"] = False
+import koreanize_matplotlib
 
 # ══════════════════════════════════════════════════════════════
 #  LSTM 모델 구조 정의
@@ -191,4 +182,5 @@ with tab3:
     st.subheader("📋 데이터 상세 정보")
     st.dataframe(df.sort_index(ascending=False), use_container_width=True)
     st.download_button("Download CSV", df.to_csv(), "price_data.csv", "text/csv")
+
 
