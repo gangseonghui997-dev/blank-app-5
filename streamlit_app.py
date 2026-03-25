@@ -3,7 +3,10 @@ import pandas as pd
 import numpy as np
 import requests
 import matplotlib.pyplot as plt
-import koreanize_matplotlib
+try:
+    import koreanize_matplotlib
+except ImportError:
+    st.warning("Matplotlib 한글 폰트 패키지(koreanize-matplotlib)가 설치되지 않았습니다. 차트 내 한글이 깨질 수 있습니다.")
 import torch
 import torch.nn as nn
 from sklearn.linear_model import LinearRegression
@@ -44,11 +47,11 @@ def load_price_data(item_name, district):
     n_days = 365
     dates = pd.date_range(end=pd.Timestamp.today(), periods=n_days)
     
-    # 기본 가격대 설정
+    # 기본 가격대 설정 (단위: 원)
     base_prices = {
-        "배추": 5000, "무": 2500, "상추": 1500, "오이": 1200,
-        "삼겹살": 2800, "쇠고기": 12000, "닭고기": 6000, "달걀": 7000,
-        "고등어": 4500, "오징어": 8000
+        "배추": 5500, "무": 2800, "상추": 1800, "오이": 1500, "양파": 3500, "고추": 2500,
+        "삼겹살": 29000, "쇠고기": 125000, "닭고기": 6500, "달걀": 7200, "돼지갈비": 18000,
+        "고등어": 4800, "오징어": 8500, "명태": 5500, "갈치": 12000, "김": 9000
     }
     base = base_prices.get(item_name, 3000)
     
@@ -106,9 +109,9 @@ def train_selected_model(df, model_type="LSTM"):
 st.sidebar.header("⚙️ Dashboard Settings")
 category = st.sidebar.selectbox("Category", ["농산물", "축산물", "수산물"])
 items = {
-    "농산물": ["배추", "무", "상추", "오이"],
-    "축산물": ["삼겹살", "쇠고기", "닭고기", "달걀"],
-    "수산물": ["고등어", "오징어"]
+    "농산물": ["배추", "무", "상추", "오이", "양파", "고추"],
+    "축산물": ["삼겹살", "쇠고기", "닭고기", "달걀", "돼지갈비"],
+    "수산물": ["고등어", "오징어", "명태", "갈치", "김"]
 }
 item_name = st.sidebar.selectbox("Item", items[category])
 district = st.sidebar.selectbox("District", ["종로구", "중구", "용산구", "송파구", "강남구"])
@@ -176,6 +179,17 @@ with tab2:
         st.pyplot(fig)
         
         st.info(f"💡 AI 예측 결과: {forecast_days}일 후 예상 가격은 약 {int(preds[-1]):,}원입니다.")
+
+        # ─── AI Insight Summary ───
+        st.divider()
+        st.subheader("📝 AI 분석 리포트")
+        trend_val = preds[-1] - latest_price
+        trend_percent = (trend_val / latest_price) * 100
+        
+        if trend_val > 0:
+            st.warning(f"⚠️ **가격 상승 주의**: {item_name}의 가격이 향후 {forecast_days}일간 약 {trend_percent:.1f}% 상승할 것으로 예측됩니다. 구매 계획에 참고하세요.")
+        else:
+            st.success(f"✅ **가격 하락 전망**: {item_name}의 가격이 향후 {forecast_days}일간 약 {abs(trend_percent):.1f}% 하락할 것으로 보입니다. 조금 더 기다려보시는 것은 어떨까요?")
 
 with tab3:
     st.subheader("📋 데이터 상세 정보")
